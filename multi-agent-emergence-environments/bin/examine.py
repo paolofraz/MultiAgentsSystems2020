@@ -5,14 +5,18 @@ import numpy as np
 from os.path import abspath, dirname, join
 from gym.spaces import Tuple
 
+import sys
+sys.path.append('./')
+
 from mae_envs.viewer.env_viewer import EnvViewer
 from mae_envs.wrappers.multi_agent import JoinMultiAgentActions
 from mujoco_worldgen.util.envs import examine_env, load_env
 from mujoco_worldgen.util.types import extract_matching_arguments
 from mujoco_worldgen.util.parse_arguments import parse_arguments
 
-
 logger = logging.getLogger(__name__)
+
+
 
 
 @click.command()
