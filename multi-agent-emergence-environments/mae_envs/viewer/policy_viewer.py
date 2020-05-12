@@ -6,7 +6,11 @@ from operator import itemgetter
 from mujoco_py import const, MjViewer
 from mujoco_worldgen.util.types import store_args
 from ma_policy.util import listdict2dictnp
+import sys
 
+sys.path.append('/home/eetu/MultiAgentSystems20/policies/')
+
+from RuleAgent import Agents
 
 def splitobs(obs, keepdims=True):
     '''
@@ -46,6 +50,7 @@ class PolicyViewer(MjViewer):
         self.env.unwrapped.viewer = self
         if self.render and self.display_window:
             self.env.render()
+        self.agents = Agents()
 
     def key_callback(self, window, key, scancode, action, mods):
         super().key_callback(window, key, scancode, action, mods)
@@ -86,6 +91,8 @@ class PolicyViewer(MjViewer):
                     actions.append(ac)
                 action = listdict2dictnp(actions, keepdims=True)
 
+            action = self.agents.act(self.ob)
+			
             self.ob, rew, done, env_info = self.env.step(action)
             self.total_rew += rew
 
