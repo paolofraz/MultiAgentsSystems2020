@@ -16,6 +16,8 @@ class Agents():
 	on distances to targets, and move towards them(because the agents are given the other agents' positions anyway). The hiders move away from the seekers in some 
 	weighted manner.'''
 
+	''' in actions, 5 means no motion, 0 is backwards and 10 is forward ''' 
+
 	'''
 	Ideas: 
 
@@ -27,6 +29,8 @@ class Agents():
 		- team co-operation: teammates sharing information
 
 		- try to detect doors based on lidar input: A door would be implied by having a spot with a longer lidar distance between two spots with a shorter distance
+
+		- find  a point that's far away from seekers and go there
 
 	'''
 
@@ -44,7 +48,7 @@ class Agents():
 
 	
 	def act(self, ob): 
-		action_movement = np.random.randint(0, 10, (self.count, 3))
+		action_movement = np.random.randint(0, 11, (self.count, 3))
 		action_pull = np.random.randint(0, 1, 4)
 		action_glueall = np.random.randint(0, 1, 4)
 		for i in range(self.count):
@@ -80,11 +84,14 @@ class Agents():
 				if team:
 					#This should be the case where the agent is a hider...
 					if not team_:
-						action_movement[i, :] = np.array([min(10, max(int(x-v_x*self.alpha), 0)), min(10, max(int(y-v_y*self.alpha), 0)), np.random.randint(0, 6)])
+						action_movement[i, :] = np.array([5 - int(v_x), 5 - int(v_y), 5])
+						if np.all(action_movement[i, :] == 5):
+							action_movement[i, :] = np.random.randint(0, 11, 3)
+						
 				else:
 					#...And this one a seeker
 					if team_:
-						action_movement[i, :] = np.array([int(x_), int(y_), np.random.randint(0, 6)])
+						action_movement[i, :] = np.array([5 - int(x - x_), 5 - int(y - y_), 5])
 
 			
 			
