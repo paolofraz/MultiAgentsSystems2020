@@ -7,8 +7,9 @@ from mujoco_py import const, MjViewer
 from mujoco_worldgen.util.types import store_args
 from ma_policy.util import listdict2dictnp
 import sys
+import os
 
-sys.path.append('/home/eetu/MultiAgentSystems20/policies/')
+sys.path.append(os.path.abspath('..') + '/policies/')
 
 from RuleAgent import Agents
 

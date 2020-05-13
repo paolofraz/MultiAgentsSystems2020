@@ -66,11 +66,11 @@ class Agents():
 				if team:
 					#This should be the case where the agent is a hider...
 					if not team_:
-						action_movement[i, :] = np.array([min(10, max(int(x-v_x*2), 0)), min(10, max(int(y-v_y*2), 0)), 0])
+						action_movement[i, :] = np.array([min(10, max(int(x-v_x*2), 0)), min(10, max(int(y-v_y*2), 0)), np.random.randint(0, 6)])
 				else:
 					#...And this one a seeker
 					if team_:
-						action_movement[i, :] = np.array([int(x_), int(y_), 0])
+						action_movement[i, :] = np.array([int(x_), int(y_), np.random.randint(0, 6)])
 
 			
 			
