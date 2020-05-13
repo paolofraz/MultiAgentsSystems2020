@@ -6,8 +6,10 @@ class Agents():
 		self.count = 4
 		self.n_hiders = 2
 		self.n_seekers = self.count - self.n_hiders
-		
 		self.t = 0
+		self.alpha = 2
+		self.objects_moved = 0
+		self.object_positions = None
 
 
 	''' Proposing the following rule-based system: Seeking agents allocate between eachother targets to pursue based 
@@ -28,8 +30,20 @@ class Agents():
 
 	'''
 
+	def check_objects(self, ob):
+		
+		box_positions = ob['box_obs'][0, :, 0:2]
+		ramp_positions = ob['ramp_obs'][0, :, 0:2]
+
+		if self.object_positions is None:
+			self.object_positions = np.concatenate((box_positions, ramp_positions), axis=0)
+		else:
+			diff = self.object_positions - np.concatenate((box_positions, ramp_positions), axis=0)
+			self.objects_moved += np.sum((np.sum(diff, axis=1) != 0))
+			self.object_positions = np.concatenate((box_positions, ramp_positions), axis=0)
+
 	
-	def act(self, ob):
+	def act(self, ob): 
 		action_movement = np.random.randint(0, 10, (self.count, 3))
 		action_pull = np.random.randint(0, 1, 4)
 		action_glueall = np.random.randint(0, 1, 4)
@@ -66,7 +80,7 @@ class Agents():
 				if team:
 					#This should be the case where the agent is a hider...
 					if not team_:
-						action_movement[i, :] = np.array([min(10, max(int(x-v_x*2), 0)), min(10, max(int(y-v_y*2), 0)), np.random.randint(0, 6)])
+						action_movement[i, :] = np.array([min(10, max(int(x-v_x*self.alpha), 0)), min(10, max(int(y-v_y*self.alpha), 0)), np.random.randint(0, 6)])
 				else:
 					#...And this one a seeker
 					if team_:

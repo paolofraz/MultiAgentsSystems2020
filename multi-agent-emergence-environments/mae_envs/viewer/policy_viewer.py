@@ -92,6 +92,7 @@ class PolicyViewer(MjViewer):
                     actions.append(ac)
                 action = listdict2dictnp(actions, keepdims=True)
 
+            self.agents.check_objects(self.ob)
             action = self.agents.act(self.ob)
 			
             self.ob, rew, done, env_info = self.env.step(action)
@@ -102,6 +103,7 @@ class PolicyViewer(MjViewer):
 
             if self.display_window:
                 self.add_overlay(const.GRID_TOPRIGHT, "Reset env; (current seed: {})".format(self.seed), "N - next / P - previous ")
+                self.add_overlay(const.GRID_TOPRIGHT, "Objects moved", str(self.agents.objects_moved))
                 self.add_overlay(const.GRID_TOPRIGHT, "Reward", str(self.total_rew))
                 if hasattr(self.env.unwrapped, "viewer_stats"):
                     for k, v in self.env.unwrapped.viewer_stats.items():
@@ -114,6 +116,7 @@ class PolicyViewer(MjViewer):
         self.n_episodes += 1
         print(f"Reward: {self.total_rew} (rolling average: {self.total_rew_avg})")
         self.total_rew = 0.0
+        self.agents.objects_moved = 0
         self.seed += 1
         self.env.seed(self.seed)
         self.ob = self.env.reset()
