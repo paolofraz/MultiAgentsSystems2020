@@ -34,18 +34,6 @@ class Agents():
 
 	'''
 
-	def check_objects(self, ob):
-		
-		box_positions = ob['box_obs'][0, :, 0:2]
-		ramp_positions = ob['ramp_obs'][0, :, 0:2]
-
-		if self.object_positions is None:
-			self.object_positions = np.concatenate((box_positions, ramp_positions), axis=0)
-		else:
-			diff = self.object_positions - np.concatenate((box_positions, ramp_positions), axis=0)
-			self.objects_moved += np.sum((np.sum(diff, axis=1) != 0))
-			self.object_positions = np.concatenate((box_positions, ramp_positions), axis=0)
-
 	
 	def act(self, ob): 
 		action_movement = np.random.randint(0, 11, (self.count, 3))
@@ -84,7 +72,7 @@ class Agents():
 				if team:
 					#This should be the case where the agent is a hider...
 					if not team_:
-						action_movement[i, :] = np.array([5 - int(v_x), 5 - int(v_y), 5])
+						action_movement[i, :] = np.array([5 - int(x_ - x), 5 - int(y_ - y), 5])
 						if np.all(action_movement[i, :] == 5):
 							action_movement[i, :] = np.random.randint(0, 11, 3)
 						
