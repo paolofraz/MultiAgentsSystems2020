@@ -10,8 +10,10 @@ import sys
 import os
 
 sys.path.append(os.path.abspath('..') + '/policies/')
+sys.path.append(os.path.abspath('..') + '/utils/')
 
 from RuleAgent import Agents
+from measures import Measure
 
 def splitobs(obs, keepdims=True):
     '''
@@ -52,6 +54,7 @@ class PolicyViewer(MjViewer):
         if self.render and self.display_window:
             self.env.render()
         self.agents = Agents()
+        self.measures = Measure()
 
     def key_callback(self, window, key, scancode, action, mods):
         super().key_callback(window, key, scancode, action, mods)
@@ -92,8 +95,10 @@ class PolicyViewer(MjViewer):
                     actions.append(ac)
                 action = listdict2dictnp(actions, keepdims=True)
 
-            self.agents.check_objects(self.ob)
             action = self.agents.act(self.ob)
+
+            self.measures.check_agents(self.ob)
+            self.measures.check_objects(self.ob)
 			
             self.ob, rew, done, env_info = self.env.step(action)
             self.total_rew += rew
@@ -103,7 +108,9 @@ class PolicyViewer(MjViewer):
 
             if self.display_window:
                 self.add_overlay(const.GRID_TOPRIGHT, "Reset env; (current seed: {})".format(self.seed), "N - next / P - previous ")
-                self.add_overlay(const.GRID_TOPRIGHT, "Objects moved", str(self.agents.objects_moved))
+                self.add_overlay(const.GRID_TOPRIGHT, "Objects moved", str(self.measures.objects_moved))
+                self.add_overlay(const.GRID_TOPRIGHT, "Total hider movement", str(self.measures.hiders_movement))
+                self.add_overlay(const.GRID_TOPRIGHT, "Total seeker movement", str(self.measures.seekers_movement))
                 self.add_overlay(const.GRID_TOPRIGHT, "Reward", str(self.total_rew))
                 if hasattr(self.env.unwrapped, "viewer_stats"):
                     for k, v in self.env.unwrapped.viewer_stats.items():
