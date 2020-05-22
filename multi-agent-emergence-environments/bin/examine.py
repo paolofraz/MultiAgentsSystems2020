@@ -68,20 +68,20 @@ def main(argv):
 
         env.reset()  # generate action and observation spaces
         assert np.all([name.endswith('.npz') for name in policy_names])
-        policies = [load_policy(name, env=env, scope=f'policy_{i}')
-                    for i, name in enumerate(policy_names)]
+        # policies = [load_policy(name, env=env, scope=f'policy_{i}')
+        #             for i, name in enumerate(policy_names)]
 
 
         args_remaining_policy = args_remaining_env
 
-        if env is not None and policies is not None:
+        if env is not None:
             args_to_pass, args_remaining_viewer = extract_matching_arguments(PolicyViewer, kwargs)
             args_remaining = set(args_remaining_env)
             args_remaining = args_remaining.intersection(set(args_remaining_policy))
             args_remaining = args_remaining.intersection(set(args_remaining_viewer))
             assert len(args_remaining) == 0, (
                 f"There left unused arguments: {args_remaining}. There shouldn't be any.")
-            viewer = PolicyViewer(env, policies, **args_to_pass)
+            viewer = PolicyViewer(env, [], **args_to_pass)
             viewer.run()
 
 

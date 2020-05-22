@@ -45,7 +45,7 @@ class PolicyViewer(MjViewer):
         self.ob = env.reset()
         for policy in self.policies:
             policy.reset()
-        assert env.metadata['n_actors'] % len(policies) == 0
+        # assert env.metadata['n_actors'] % len(policies) == 0
         if hasattr(env, "reset_goal"):
             self.goal = env.reset_goal()
         super().__init__(self.env.unwrapped.sim)
@@ -82,18 +82,18 @@ class PolicyViewer(MjViewer):
         self.total_rew_avg = 0.0
         self.n_episodes = 0
         while self.duration is None or time.time() < self.end_time:
-            if len(self.policies) == 1:
-                action, _ = self.policies[0].act(self.ob)
-            else:
-                self.ob = splitobs(self.ob, keepdims=False)
-                ob_policy_idx = np.split(np.arange(len(self.ob)), len(self.policies))
-                actions = []
-                for i, policy in enumerate(self.policies):
-                    inp = itemgetter(*ob_policy_idx[i])(self.ob)
-                    inp = listdict2dictnp([inp] if ob_policy_idx[i].shape[0] == 1 else inp)
-                    ac, info = policy.act(inp)
-                    actions.append(ac)
-                action = listdict2dictnp(actions, keepdims=True)
+            # if len(self.policies) == 1:
+            #     action, _ = self.policies[0].act(self.ob)
+            # else:
+            #     self.ob = splitobs(self.ob, keepdims=False)
+            #     ob_policy_idx = np.split(np.arange(len(self.ob)), len(self.policies))
+            #     actions = []
+            #     for i, policy in enumerate(self.policies):
+            #         inp = itemgetter(*ob_policy_idx[i])(self.ob)
+            #         inp = listdict2dictnp([inp] if ob_policy_idx[i].shape[0] == 1 else inp)
+            #         ac, info = policy.act(inp)
+            #         actions.append(ac)
+            #     action = listdict2dictnp(actions, keepdims=True)
 
             action = self.agents.act(self.ob)
 
@@ -104,7 +104,10 @@ class PolicyViewer(MjViewer):
             self.total_rew += rew
 
             if done or env_info.get('discard_episode', False):
-                self.reset_increment()
+                self.measures.add_rewards(self.total_rew)
+                self.measures.write_to_csv("random_agent.csv")
+                self.measures = Measure()
+                reset_increment()
 
             if self.display_window:
                 self.add_overlay(const.GRID_TOPRIGHT, "Reset env; (current seed: {})".format(self.seed), "N - next / P - previous ")
