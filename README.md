@@ -14,3 +14,6 @@ The policies folder contains the agent policies developed for this project.
 
 The environments folder contains all the environments that are experimented with in this project
 
+## setup 
+
+This project depends on the openai hide and seek repository, which is built on the Mujoco physics engine. To run the project, follow the installation instructions at https://github.com/openai/multi-agent-emergence-environments
