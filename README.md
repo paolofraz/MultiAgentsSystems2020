@@ -1,10 +1,13 @@
-# Project - Hide and Seek
+# Autonomous Agents and Multi-Agent Systems: Project
+# OpenAI - Hide and Seek
 
 ## Scope
 
 The purpose of this project is to experiment on the OpenAI Hide and Seek system with different types of multiagent designs.
 
 ## Project structure
+
+See the file _Final Report.pdf_ for the complete description of the assignement and results.
 
 ### policies
 
